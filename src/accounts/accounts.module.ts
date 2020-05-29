@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AccountController } from './account.controller';
+import { AccountController } from './accounts.controller';
 import { AccountRepository } from './account.repository';
-import { AccountService } from './account.service';
+import { AccountService } from './accounts.service';
 import { JwtStrategy } from './jwt.strategy';
 
 
@@ -15,7 +15,7 @@ import { JwtStrategy } from './jwt.strategy';
     JwtModule.register({
       secret: 'topSecret51',
       signOptions: {
-        expiresIn: 3600,
+        expiresIn: "90d",
       },
     }),
   ],

@@ -6,8 +6,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccountRepository } from './account.repository';
-import { CreateAccountDto } from './dto/create-account.dto';
-import { LoginAccountDto } from './dto/login-account.dto';
+import { CreateAccountDto, LoginAccountDto, UpdateAccountDto } from './dto';
 import { JwtPayload } from './jwt-payload.interface';
 
 @Injectable()
@@ -17,22 +16,6 @@ export class AccountService {
     private accountRepository: AccountRepository,
     private jwtService: JwtService,
   ) {}
-
-  createAccount(createAccountDto: CreateAccountDto) {
-    return this.accountRepository.createAccount(createAccountDto);
-  }
-
-  async getAccountById(id: number) {
-    const found = await this.accountRepository.findOne({ id });
-    if (!found) {
-      throw new NotFoundException(`Không tìm thấy tài khoản ${id} `);
-    }
-    const { email, name, phone, workplace, type, status } = found;
-
-    const user = { id, email, name, phone, workplace, type, status };
-
-    return user;
-  }
 
   async login(loginAccountDto: LoginAccountDto) {
     const { email, password } = loginAccountDto;
@@ -56,4 +39,35 @@ export class AccountService {
 
     return { accessToken };
   }
+
+  createAccount(createAccountDto: CreateAccountDto) {
+    return this.accountRepository.createAccount(createAccountDto);
+  }
+
+  async getAllAccount(){
+    const accountList = await this.accountRepository.find();
+    return accountList;
+  }
+
+  async getAccountById(id: number) {
+    const found = await this.accountRepository.findOne({ id });
+    if (!found) {
+      throw new NotFoundException(`Không tìm thấy tài khoản ${id} `);
+    }
+    const { email, name, phone, workplace, type, status } = found;
+
+    const user = { id, email, name, phone, workplace, type, status };
+
+    return user;
+  }
+
+  async updateAccount(id: number, updateAccountDto: UpdateAccountDto){
+    const isUpdated = await this.accountRepository.updateAccount(id, updateAccountDto);
+    if (isUpdated){
+      const updatedAccount = await this.accountRepository.findOne({ id });
+      return updatedAccount;
+    }
+  }
+
+
 }
