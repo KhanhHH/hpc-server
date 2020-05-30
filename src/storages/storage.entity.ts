@@ -9,6 +9,7 @@ import {
   ManyToOne
 } from 'typeorm';
 import { Account } from '../accounts/account.entity';
+import { FeatureStatus } from '../features/feature.enum';
 
 @Entity()
 @Unique(['id'])
@@ -30,9 +31,17 @@ export class Storage extends BaseEntity {
   @Column()
   endDate: Date;
 
+  @Column({
+    type: 'enum',
+    enum: FeatureStatus,
+    default: FeatureStatus.DEACTIVE
+  })
+  status: string;
+
   @OneToOne(
     () => Account,
-    account => account.id, {eager: false}
+    account => account.id,
+    { eager: true }
   )
   @JoinColumn()
   account: Account;

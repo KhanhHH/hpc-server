@@ -1,6 +1,6 @@
-import { Controller, Post, Body, UsePipes, ValidationPipe, UseGuards, UseInterceptors, ClassSerializerInterceptor, Patch, ParseIntPipe, Param } from '@nestjs/common';
+import { Controller, Post, Body, UsePipes, ValidationPipe, UseGuards, UseInterceptors, ClassSerializerInterceptor, Patch, ParseIntPipe, Param, Get } from '@nestjs/common';
 import { FeaturesService } from './features.service';
-import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto } from './dto';
+import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto, UpdateApprovedStorageDto } from './dto';
 import { GetAccount } from '../accounts/get-account.decorator';
 import { Account } from '../accounts/account.entity';
 import { AuthGuard } from '@nestjs/passport';
@@ -31,4 +31,29 @@ export class FeaturesController {
   ) {
     return this.featuresService.updateFeatureRequestStatus(account, id, updateFeatureRequestStatusDto);
   }
+
+  @Get('requests')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(ClassSerializerInterceptor)
+  getAllFeatureRequest() {
+    return this.featuresService.getAllFeatureRequest();
+  }
+
+  @Get('approved')
+  @UseGuards(AuthGuard())
+  getAllApprovedFeature(){
+    return this.featuresService.getAllAprrovedFeature();
+  }
+
+  @Patch('approved-storage/:id')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(ClassSerializerInterceptor)
+  updateApprovedStorage(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateApprovedStorageDto: UpdateApprovedStorageDto,
+  ){
+    return this.featuresService.updateApprovedStorage(id, updateApprovedStorageDto);
+  }
+
+
 }

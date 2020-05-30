@@ -3,6 +3,7 @@ import { Account } from '../accounts/account.entity';
 import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto } from './dto';
 import { FeatureRequest } from './feature-request.entity';
 import { Feature } from './feature.entity';
+import { FeatureCode } from './feature.enum';
 
 @EntityRepository(FeatureRequest)
 export class FeatureRequestRepository extends Repository<FeatureRequest> {
@@ -12,6 +13,7 @@ export class FeatureRequestRepository extends Repository<FeatureRequest> {
   ) {
     const { maxSize, endDate } = createStorageRequestDto;
     const featureRequest = new FeatureRequest();
+    featureRequest.featureCode = FeatureCode.STORAGE;
     featureRequest.maxSize = maxSize * 1000000;
     featureRequest.endDate = endDate;
     featureRequest.account = account;
