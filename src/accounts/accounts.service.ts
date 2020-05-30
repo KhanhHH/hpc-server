@@ -52,7 +52,7 @@ export class AccountService {
   async getAccountById(id: number) {
     const found = await this.accountRepository.findOne({ id });
     if (!found) {
-      throw new NotFoundException(`Không tìm thấy tài khoản ${id} `);
+      throw new NotFoundException(`Không tìm thấy tài khoản`);
     }
     const { email, name, phone, workplace, type, status } = found;
 
@@ -62,6 +62,10 @@ export class AccountService {
   }
 
   async updateAccount(id: number, updateAccountDto: UpdateAccountDto){
+    const found = await this.accountRepository.findOne({ id });
+    if (!found) {
+      throw new NotFoundException(`Không tìm thấy tài khoản`);
+    }
     const isUpdated = await this.accountRepository.updateAccount(id, updateAccountDto);
     if (isUpdated){
       const updatedAccount = await this.accountRepository.findOne({ id });

@@ -3,11 +3,17 @@ import { FeaturesService } from './features.service';
 import { FeaturesController } from './features.controller';
 import { AccountModule } from '../accounts/accounts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FeatureRequest } from './feature-request.entity';
+import { FeatureRequestRepository } from './feature.repository';
+import { StoragesModule } from '../storages/storages.module';
+import { StorageRepository } from '../storages/storage.repository';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([FeatureRequest]), AccountModule],
+  imports: [
+    TypeOrmModule.forFeature([FeatureRequestRepository, StorageRepository]),
+    AccountModule,
+    StoragesModule
+  ],
   providers: [FeaturesService],
-  controllers: [FeaturesController],
+  controllers: [FeaturesController]
 })
 export class FeaturesModule {}

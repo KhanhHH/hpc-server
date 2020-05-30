@@ -26,7 +26,7 @@ export class AccountController {
   }
 
   @Post('')
-  @UseGuards(AuthGuard())
+  // @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)
   @UseInterceptors(ClassSerializerInterceptor)
   createAccount(@Body() createAccountDto: CreateAccountDto) {

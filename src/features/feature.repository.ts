@@ -1,7 +1,44 @@
 import { EntityRepository, Repository } from 'typeorm';
+import { Account } from '../accounts/account.entity';
+import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto } from './dto';
 import { FeatureRequest } from './feature-request.entity';
+import { Feature } from './feature.entity';
 
 @EntityRepository(FeatureRequest)
 export class FeatureRequestRepository extends Repository<FeatureRequest> {
+  async createStorageRequest(
+    account: Account,
+    createStorageRequestDto: CreateStorageRequestDto
+  ) {
+    const { maxSize, endDate } = createStorageRequestDto;
+    const featureRequest = new FeatureRequest();
+    featureRequest.maxSize = maxSize * 1000000;
+    featureRequest.endDate = endDate;
+    featureRequest.account = account;
+    await featureRequest.save();
+    return featureRequest;
+  }
 
+  async updateFeatureRequestStatus(
+    account: Account,
+    id: number,
+    updateFeatureRequestStatusDto: UpdateFeatureRequestStatusDto
+  ){
+    const { status } = updateFeatureRequestStatusDto;
+    await this.createQueryBuilder()
+      .update(FeatureRequest)
+      .set({ status })
+      .where('id = :id', { id })
+      .execute();
+
+    const updated = this.findOne({id});
+    return updated;
+    
+  }
+}
+@EntityRepository(Feature)
+export class FeatureRepository extends Repository<FeatureRequest> {
+  test() {
+    console.log('helloworld');
+  }
 }
