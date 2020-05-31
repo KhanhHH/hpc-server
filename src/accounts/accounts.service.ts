@@ -34,6 +34,7 @@ export class AccountService {
     const payload: JwtPayload = {
       id: foundUser.id,
       email: foundUser.email,
+      type: foundUser.type
     };
     const accessToken = this.jwtService.sign(payload);
 

@@ -10,11 +10,12 @@ import {
   ParseIntPipe,
   Param,
   UseGuards,
-  Patch,
+  Patch
 } from '@nestjs/common';
 import { AccountService } from './accounts.service';
 import { CreateAccountDto, LoginAccountDto, UpdateAccountDto } from './dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetAccount } from './get-account.decorator';
 
 @Controller('accounts')
 export class AccountController {
@@ -40,6 +41,13 @@ export class AccountController {
     return this.accountService.getAllAccount();
   }
 
+  @Get('me')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(ClassSerializerInterceptor)
+  getMyAccount(@GetAccount() account: Account) {
+    return account;
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard())
   getAccountById(@Param('id', ParseIntPipe) id: number) {
@@ -52,7 +60,7 @@ export class AccountController {
   @UseInterceptors(ClassSerializerInterceptor)
   updateAccount(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateAccountDto: UpdateAccountDto,
+    @Body() updateAccountDto: UpdateAccountDto
   ) {
     return this.accountService.updateAccount(id, updateAccountDto);
   }
