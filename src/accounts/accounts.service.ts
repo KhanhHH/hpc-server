@@ -1,7 +1,7 @@
 import {
   Injectable,
   NotFoundException,
-  UnauthorizedException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,7 +14,7 @@ export class AccountService {
   constructor(
     @InjectRepository(AccountRepository)
     private accountRepository: AccountRepository,
-    private jwtService: JwtService,
+    private jwtService: JwtService
   ) {}
 
   async login(loginAccountDto: LoginAccountDto) {
@@ -25,7 +25,7 @@ export class AccountService {
     }
     const isValid = await this.accountRepository.validatePassword(
       password,
-      foundUser.password,
+      foundUser.password
     );
 
     if (!isValid) {
@@ -45,8 +45,12 @@ export class AccountService {
     return this.accountRepository.createAccount(createAccountDto);
   }
 
-  async getAllAccount(){
-    const accountList = await this.accountRepository.find();
+  async getAllAccount() {
+    const accountList = await this.accountRepository.find({
+      order: {
+        id: 'DESC'
+      }
+    });
     return accountList;
   }
 
@@ -62,17 +66,18 @@ export class AccountService {
     return user;
   }
 
-  async updateAccount(id: number, updateAccountDto: UpdateAccountDto){
+  async updateAccount(id: number, updateAccountDto: UpdateAccountDto) {
     const found = await this.accountRepository.findOne({ id });
     if (!found) {
       throw new NotFoundException(`Không tìm thấy tài khoản`);
     }
-    const isUpdated = await this.accountRepository.updateAccount(id, updateAccountDto);
-    if (isUpdated){
+    const isUpdated = await this.accountRepository.updateAccount(
+      id,
+      updateAccountDto
+    );
+    if (isUpdated) {
       const updatedAccount = await this.accountRepository.findOne({ id });
       return updatedAccount;
     }
   }
-
-
 }

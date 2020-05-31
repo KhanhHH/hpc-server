@@ -9,11 +9,11 @@ export class CreateAccountDto {
     @MinLength(6, { message: 'Mật khẩu phải có ít nhất 6 kí tự' })
     password: string;
 
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Họ tên không được để trống' })
     name: string;
 
     @IsMobilePhone("vi-VN", {}, { message: 'Số điện thoại không hợp lệ' })
-    @IsNotEmpty()
+    @IsNotEmpty({ message: 'Số điện thoại không được để trống' })
     phone: string;
 
     @IsNotEmpty({ message: 'Đơn vị công tác không được để trống' })
