@@ -1,6 +1,5 @@
-import { Unique, Entity, BaseEntity, PrimaryGeneratedColumn, Column, OneToOne, JoinColumn, ManyToOne,  } from "typeorm";
+import { Unique, Entity, BaseEntity, PrimaryGeneratedColumn, Column, JoinColumn, ManyToOne,  } from "typeorm";
 import { Account } from "../accounts/account.entity";
-import { Storage } from "../storages/storage.entity";
 import { FeatureRequestStatus } from "./feature-request-status.enum";
 import { FeatureCode } from "./feature.enum";
 
@@ -10,7 +9,7 @@ export class FeatureRequest extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({ type: 'bigint' })
     maxSize: number
 
     @Column()

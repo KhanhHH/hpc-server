@@ -14,7 +14,7 @@ export class FeatureRequestRepository extends Repository<FeatureRequest> {
     const { maxSize, endDate } = createStorageRequestDto;
     const featureRequest = new FeatureRequest();
     featureRequest.featureCode = FeatureCode.STORAGE;
-    featureRequest.maxSize = maxSize * 1000000;
+    featureRequest.maxSize = maxSize;
     featureRequest.endDate = endDate;
     featureRequest.account = account;
     await featureRequest.save();

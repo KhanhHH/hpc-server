@@ -39,13 +39,23 @@ export class FeaturesController {
     return this.featuresService.getAllFeatureRequest();
   }
 
-  @Get('approved')
+  @Get('requests/my-status')
   @UseGuards(AuthGuard())
-  getAllApprovedFeature(){
-    return this.featuresService.getAllAprrovedFeature();
+  @UseInterceptors(ClassSerializerInterceptor)
+  getMyFeature(
+    @GetAccount() account: Account
+  ) {
+    return this.featuresService.getMyFeatureStatus(account);
   }
 
-  @Patch('approved-storage/:id')
+  @Get('approved/storage')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(ClassSerializerInterceptor)
+  getAllApprovedFeature(){
+    return this.featuresService.getAllAprrovedStorage();
+  }
+
+  @Patch('approved/storage/:id')
   @UseGuards(AuthGuard())
   @UseInterceptors(ClassSerializerInterceptor)
   updateApprovedStorage(

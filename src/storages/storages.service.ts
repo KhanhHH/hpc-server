@@ -1,16 +1,22 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { StorageRepository } from './storage.repository';
-// import { Account } from '../accounts/account.entity';
+import { StorageRepository, StorageFileRepository, StorageFolderRepository } from './storage.repository';
+import { Account } from '../accounts/account.entity';
+import { UploadFileDto } from './dto/upload-file.dto';
 
 @Injectable()
 export class StoragesService {
   constructor(
     @InjectRepository(StorageRepository)
-    private storageRepository: StorageRepository
+    @InjectRepository(StorageFileRepository)
+    @InjectRepository(StorageFolderRepository)
+    private storageRepository: StorageRepository,
+    private storageFileRepository: StorageFileRepository,
+    private storageFolderRepository: StorageFolderRepository
   ) {}
-//   async createStorage(account: Account, maxSize: number, endDate: Date) {
-//      const createdStorage = await this.storageRepository.createStorage(account, maxSize, endDate);
-//     return createdStorage;
-//   }
+
+  async saveFileToFolder(folderId: number, file: UploadFileDto, account: Account) {
+    const savedFile = await this.storageFileRepository.saveFile(file, account);
+    return this.storageFolderRepository.addFileToFolder(savedFile.id, folderId);
+  }
 }

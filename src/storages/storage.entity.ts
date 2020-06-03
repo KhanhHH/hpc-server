@@ -5,8 +5,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
-  JoinColumn,
-  ManyToOne
+  JoinColumn
 } from 'typeorm';
 import { Account } from '../accounts/account.entity';
 import { FeatureStatus } from '../features/feature.enum';
@@ -18,11 +17,12 @@ export class Storage extends BaseEntity {
   id: number;
 
   @Column({
+    type: 'bigint',
     default: 0
   })
   currentSize: number;
 
-  @Column()
+  @Column({ type: 'bigint' })
   maxSize: number;
 
   @Column()
