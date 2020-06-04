@@ -1,6 +1,6 @@
 export class UploadFileDto {
     originalname: string;
     filename: string;
-    size: string;
+    size: number;
     mimetype: string;
 }

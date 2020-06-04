@@ -24,7 +24,7 @@ export class StorageFile extends BaseEntity {
   path: string;
 
   @Column({ type: 'bigint' })
-  size: string;
+  size: number;
 
   @Column()
   mimetype: string;
