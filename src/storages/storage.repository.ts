@@ -119,10 +119,11 @@ export class StorageFolderRepository extends Repository<StorageFolder> {
   async updateFolder(
     updateFolderDto: UpdateFolderDto,
     folderId: number,
+    childFolderId: number,
     account: Account
   ) {
     const { name } = updateFolderDto;
-    const folder = await this.findOne({ id: folderId, account });
+    const folder = await this.findOne({ id: childFolderId, account });
     folder.name = name;
     const updated = await folder.save();
     return updated;

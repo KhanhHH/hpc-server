@@ -54,11 +54,10 @@ export class FeaturesService {
           maxSize,
           endDate
         );
-        await this.storageFolderRepository.createRootFolder(account);
+        await this.storageFolderRepository.createRootFolder(featureRequest.account);
       }
     } 
     await this.featureRequestRepository.updateFeatureRequestStatus(
-      account,
       id,
       updateFeatureRequestStatusDto
     );

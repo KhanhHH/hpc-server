@@ -24,14 +24,16 @@ export class StoragesService {
     private storageFolderRepository: StorageFolderRepository
   ) {}
 
-
   async getMyStorage(account: Account) {
     const storage = await this.storageRepository.findOne({ account });
-    delete storage.account;
+    delete storage.account.password;
     const rootFolder = await this.storageFolderRepository.findOne({
       folderType: FolderType.ROOT,
       account
     });
+    console.log('[MESSAGE]: StoragesService -> getMyStorage -> account', account)
+
+    console.log('[MESSAGE]: StoragesService -> getMyStorage -> rootFolder', rootFolder)
     return { ...storage, rootFolderId: rootFolder.id };
   }
 
@@ -42,8 +44,12 @@ export class StoragesService {
   ) {
     const savedFile = await this.storageFileRepository.saveFile(file, account);
     const storage = await this.storageRepository.findOne({ account });
-    await this.storageRepository.incrementStorageSize(storage.id, savedFile.size);
-    return this.storageFolderRepository.addFileToFolder(savedFile.id, folderId);
+    await this.storageRepository.incrementStorageSize(
+      storage.id,
+      savedFile.size
+    );
+    await this.storageFolderRepository.addFileToFolder(savedFile.id, folderId);
+    return savedFile;
   }
 
   async getFolder(folderId: number, account: Account) {
@@ -57,18 +63,25 @@ export class StoragesService {
 
     if (childFiles.length > 0) {
       childFilesDetail = await this.storageFileRepository.find({
-        where: { id: In(childFiles) }
+        where: { id: In(childFiles) },
+        order: {
+          originalname: 'ASC'
+        }
       });
     }
     if (childFolders.length > 0) {
       childFoldersDetail = await this.storageFolderRepository.find({
-        where: { id: In(childFolders) }
+        where: { id: In(childFolders) },
+        order: {
+          name: 'ASC'
+        }
       });
     }
 
     const result = {
       id: folder.id,
       folderType: folder.folderType,
+      name: folder.name,
       childFiles: childFilesDetail,
       childFolders: childFoldersDetail
     };
@@ -82,6 +95,7 @@ export class StoragesService {
       createFolderDto,
       account
     );
+    delete createdFolder.account;
     await this.storageFolderRepository.addFolderToFolder(
       parentFolderId,
       createdFolder.id
@@ -90,10 +104,10 @@ export class StoragesService {
   }
 
   async deleteFile(folderId: number, fileId: number, account: Account) {
-    const file = await this.storageFileRepository.findOne({id : fileId})
+    const file = await this.storageFileRepository.findOne({ id: fileId });
     await this.storageFileRepository.deleteFile(fileId, account);
     const storage = await this.storageRepository.findOne({ account });
-    await this.storageRepository.decrementStorageSize(storage.id, file.size)
+    await this.storageRepository.decrementStorageSize(storage.id, file.size);
     const updated = await this.storageFolderRepository.removeFileFromFolder(
       folderId,
       fileId
@@ -130,11 +144,13 @@ export class StoragesService {
   async updateFolder(
     updateFolderDto: UpdateFolderDto,
     folderId: number,
+    childFolderId: number,
     account: Account
   ) {
     return this.storageFolderRepository.updateFolder(
       updateFolderDto,
       folderId,
+      childFolderId,
       account
     );
   }

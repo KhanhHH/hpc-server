@@ -22,7 +22,6 @@ export class FeatureRequestRepository extends Repository<FeatureRequest> {
   }
 
   async updateFeatureRequestStatus(
-    account: Account,
     id: number,
     updateFeatureRequestStatusDto: UpdateFeatureRequestStatusDto
   ){

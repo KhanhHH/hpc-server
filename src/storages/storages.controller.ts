@@ -73,14 +73,15 @@ export class StoragesController {
     return this.storagesService.getFolder(folderId, account);
   }
 
-  @Patch('folder/:folderId')
+  @Patch('folder/:folderId/child-folder/:childFolderId')
   @UseGuards(AuthGuard())
   updateFolder(
     @Param('folderId', ParseIntPipe) folderId: number,
+    @Param('childFolderId', ParseIntPipe) childFolderId: number,
     @Body() updateFolderDto: UpdateFolderDto,
     @GetAccount() account: Account,
   ) {
-    return this.storagesService.updateFolder(updateFolderDto, folderId, account);
+    return this.storagesService.updateFolder(updateFolderDto, folderId, childFolderId, account);
   }
 
   @Post('folder')
