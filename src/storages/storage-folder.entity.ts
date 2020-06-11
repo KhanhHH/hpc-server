@@ -36,16 +36,6 @@ export class StorageFolder extends BaseEntity {
   @Column({ type: 'int', array: true, default: "{}" })
   childFolders: number[];
 
-  // @OneToMany(() => StorageFile, storageFile => storageFile.id)
-  // @Column({ default: null, nullable: true })
-  // @JoinColumn()
-  // childFiles: number[];
-
-  // @OneToMany(() => StorageFolder, storageFolder => storageFolder.id)
-  // @Column({ default: null, nullable: true })
-  // @JoinColumn()
-  // childFolder: number[];
-
   @ManyToOne(
     () => Account,
     account => account.id,

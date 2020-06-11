@@ -31,9 +31,6 @@ export class StoragesService {
       folderType: FolderType.ROOT,
       account
     });
-    console.log('[MESSAGE]: StoragesService -> getMyStorage -> account', account)
-
-    console.log('[MESSAGE]: StoragesService -> getMyStorage -> rootFolder', rootFolder)
     return { ...storage, rootFolderId: rootFolder.id };
   }
 
@@ -43,12 +40,14 @@ export class StoragesService {
     account: Account
   ) {
     const savedFile = await this.storageFileRepository.saveFile(file, account);
-    const storage = await this.storageRepository.findOne({ account });
-    await this.storageRepository.incrementStorageSize(
-      storage.id,
-      savedFile.size
-    );
-    await this.storageFolderRepository.addFileToFolder(savedFile.id, folderId);
+    if (folderId){
+      const storage = await this.storageRepository.findOne({ account });
+      await this.storageRepository.incrementStorageSize(
+        storage.id,
+        savedFile.size
+      );
+      await this.storageFolderRepository.addFileToFolder(savedFile.id, folderId);
+    }
     return savedFile;
   }
 

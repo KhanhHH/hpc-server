@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 import { Account } from '../accounts/account.entity';
-import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto } from './dto';
+import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto, CreateComputingRequestDto } from './dto';
 import { FeatureRequest } from './feature-request.entity';
 import { Feature } from './feature.entity';
 import { FeatureCode } from './feature.enum';
@@ -36,9 +36,25 @@ export class FeatureRequestRepository extends Repository<FeatureRequest> {
     return updated;
     
   }
+
+  async createComputingRequest(
+    account: Account,
+    createComputingRequestDto: CreateComputingRequestDto
+  ){
+    const { userType, maxCpu, maxRam, endDate} = createComputingRequestDto;
+    const featureRequest = new FeatureRequest();
+    featureRequest.featureCode = FeatureCode.COMPUTING;
+    featureRequest.userType = userType;
+    featureRequest.maxCpu = maxCpu;
+    featureRequest.maxRam = maxRam;
+    featureRequest.endDate = endDate;
+    featureRequest.account = account;
+    const created = await featureRequest.save();
+    return created;
+  }
 }
 @EntityRepository(Feature)
-export class FeatureRepository extends Repository<FeatureRequest> {
+export class FeatureRepository extends Repository<Feature> {
   test() {
     console.log('helloworld');
   }

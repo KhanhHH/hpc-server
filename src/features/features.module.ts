@@ -9,16 +9,20 @@ import {
   StorageRepository,
   StorageFolderRepository
 } from '../storages/storage.repository';
+import { ComputingRepository } from '../computings/computing.repository';
+import { ComputingsModule } from '../computings/computings.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([
       FeatureRequestRepository,
       StorageRepository,
-      StorageFolderRepository
+      StorageFolderRepository,
+      ComputingRepository
     ]),
     AccountModule,
-    StoragesModule
+    StoragesModule,
+    ComputingsModule
   ],
   providers: [FeaturesService],
   controllers: [FeaturesController]

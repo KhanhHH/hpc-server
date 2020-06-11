@@ -50,8 +50,26 @@ export class StoragesController {
   uploadFile(
     @Param('folderId', ParseIntPipe) folderId: number,
     @GetAccount() account: Account,
-    @UploadedFile() file: UploadFileDto
+    @UploadedFile() file: UploadFileDto,
   ) {
+    return this.storagesService.saveFileToFolder(folderId, file, account);
+  }
+
+  @Post('upload/script')
+  @UseGuards(AuthGuard())
+  @UseInterceptors(
+    FileInterceptor('files', {
+      storage: diskStorage({
+        destination: './upload/script',
+        filename: generateFileName
+      })
+    })
+  )
+  uploadScript(
+    @GetAccount() account: Account,
+    @UploadedFile() file: UploadFileDto,
+  ) {
+    const folderId = null;
     return this.storagesService.saveFileToFolder(folderId, file, account);
   }
 
