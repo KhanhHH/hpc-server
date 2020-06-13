@@ -5,6 +5,7 @@ import { typeOrmConfig } from './config/typeorm.config';
 import { FeaturesModule } from './features/features.module';
 import { StoragesModule } from './storages/storages.module';
 import { ComputingsModule } from './computings/computings.module';
+import { VirtualMachinesModule } from './virtual-machines/virtual-machines.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { ComputingsModule } from './computings/computings.module';
     AccountModule,
     FeaturesModule,
     StoragesModule,
-    ComputingsModule
+    ComputingsModule,
+    VirtualMachinesModule
   ],
   controllers: [],
   providers: [],

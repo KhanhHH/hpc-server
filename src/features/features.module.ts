@@ -11,6 +11,8 @@ import {
 } from '../storages/storage.repository';
 import { ComputingRepository } from '../computings/computing.repository';
 import { ComputingsModule } from '../computings/computings.module';
+import { VirtualMachineRepository, VirtualMachineVpsRepository } from '../virtual-machines/virtual-machine.repository';
+import { VirtualMachinesModule } from '../virtual-machines/virtual-machines.module';
 
 @Module({
   imports: [
@@ -18,11 +20,14 @@ import { ComputingsModule } from '../computings/computings.module';
       FeatureRequestRepository,
       StorageRepository,
       StorageFolderRepository,
-      ComputingRepository
+      ComputingRepository,
+      VirtualMachineRepository,
+      VirtualMachineVpsRepository
     ]),
     AccountModule,
     StoragesModule,
-    ComputingsModule
+    ComputingsModule,
+    VirtualMachinesModule
   ],
   providers: [FeaturesService],
   controllers: [FeaturesController]

@@ -13,6 +13,9 @@ import { FeatureRequestStatus } from './feature-request-status.enum';
 import { FeatureCode } from './feature.enum';
 import { ComputingRepository } from '../computings/computing.repository';
 import { UpdateApprovedComputingDto } from './dto/update-approved-computing.dto';
+import { CreateVirtualMachineRequestDto } from './dto/create-virtual-machine-request.dto';
+import { VirtualMachineRepository, VirtualMachineVpsRepository } from '../virtual-machines/virtual-machine.repository';
+import { VpsStatus, VpsApproveStatus } from '../virtual-machines/vps-status.enum';
 
 @Injectable()
 export class FeaturesService {
@@ -21,10 +24,14 @@ export class FeaturesService {
     @InjectRepository(StorageRepository)
     @InjectRepository(StorageFolderRepository)
     @InjectRepository(ComputingRepository)
+    @InjectRepository(VirtualMachineRepository)
+    @InjectRepository(VirtualMachineVpsRepository)
     private featureRequestRepository: FeatureRequestRepository,
     private storageRepository: StorageRepository,
     private storageFolderRepository: StorageFolderRepository,
-    private computingRepository: ComputingRepository
+    private computingRepository: ComputingRepository,
+    private virtualMachineRepository: VirtualMachineRepository,
+    private virtualMachineVpsRepository: VirtualMachineVpsRepository,
   ) {}
   async createStorageRequest(
     account: Account,
@@ -60,6 +67,23 @@ export class FeaturesService {
     );
   }
 
+  async createVirtualMachineRequest(
+    account: Account,
+    createVirtualMachineRequestDto: CreateVirtualMachineRequestDto
+  ) {
+    const isPending = await this.featureRequestRepository.findOne({
+      account,
+      status: FeatureRequestStatus.PENDING
+    });
+    if (isPending) {
+      throw new ConflictException('Yêu cầu của bạn đang được phê duyệt');
+    }
+    return this.featureRequestRepository.createVirtualMachineRequest(
+      account,
+      createVirtualMachineRequestDto
+    );
+  }
+
   async updateFeatureRequestStatus(
     account: Account,
     id: number,
@@ -87,6 +111,22 @@ export class FeaturesService {
           maxCpu,
           maxRam,
           endDate
+        );
+      }
+
+      if (featureCode === FeatureCode.VIRTUAL_MACHINE) {
+        const { vmCpu, vmRam, vmHdd, endDate } = featureRequest;
+        await this.virtualMachineRepository.createVirtualMachine(
+          featureRequest.account,
+          endDate
+        );
+        await this.virtualMachineVpsRepository.createVps(
+          featureRequest.account,
+          vmCpu,
+          vmRam,
+          vmHdd,
+          VpsStatus.UP,
+          VpsApproveStatus.APPROVED
         );
       }
     } 
@@ -132,6 +172,21 @@ export class FeaturesService {
     );
     if (computingRequest) {
       returnResult.computingRequestStatus = computingRequest.status;
+    }
+
+    const virtualMachineRequest = await this.featureRequestRepository.findOne(
+      {
+        account,
+        featureCode: FeatureCode.VIRTUAL_MACHINE
+      },
+      {
+        order: {
+          id: 'DESC'
+        }
+      }
+    );
+    if (virtualMachineRequest) {
+      returnResult.virtualMachineRequestStatus = virtualMachineRequest.status;
     }
     return returnResult;
   }

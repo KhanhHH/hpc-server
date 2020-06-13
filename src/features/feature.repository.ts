@@ -4,6 +4,7 @@ import { CreateStorageRequestDto, UpdateFeatureRequestStatusDto, CreateComputing
 import { FeatureRequest } from './feature-request.entity';
 import { Feature } from './feature.entity';
 import { FeatureCode } from './feature.enum';
+import { CreateVirtualMachineRequestDto } from './dto/create-virtual-machine-request.dto';
 
 @EntityRepository(FeatureRequest)
 export class FeatureRequestRepository extends Repository<FeatureRequest> {
@@ -47,6 +48,22 @@ export class FeatureRequestRepository extends Repository<FeatureRequest> {
     featureRequest.userType = userType;
     featureRequest.maxCpu = maxCpu;
     featureRequest.maxRam = maxRam;
+    featureRequest.endDate = endDate;
+    featureRequest.account = account;
+    const created = await featureRequest.save();
+    return created;
+  }
+
+  async createVirtualMachineRequest(
+    account: Account,
+    createVirtualMachineRequestDto: CreateVirtualMachineRequestDto
+  ){
+    const { cpu, ram, hdd, endDate} = createVirtualMachineRequestDto;
+    const featureRequest = new FeatureRequest();
+    featureRequest.featureCode = FeatureCode.VIRTUAL_MACHINE;
+    featureRequest.vmCpu = cpu;
+    featureRequest.vmRam = ram;
+    featureRequest.vmHdd = hdd;
     featureRequest.endDate = endDate;
     featureRequest.account = account;
     const created = await featureRequest.save();

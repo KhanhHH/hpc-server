@@ -5,6 +5,7 @@ import { GetAccount } from '../accounts/get-account.decorator';
 import { Account } from '../accounts/account.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { UpdateApprovedComputingDto } from './dto/update-approved-computing.dto';
+import { CreateVirtualMachineRequestDto } from './dto/create-virtual-machine-request.dto';
 
 @Controller('features')
 export class FeaturesController {
@@ -30,6 +31,17 @@ export class FeaturesController {
     @GetAccount() account: Account
   ) {
     return this.featuresService.createComputingRequest(account, createComputingRequestDto);
+  }
+
+  @Post('request-virtual-machine')
+  @UseGuards(AuthGuard())
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  createVirtualMachineRequest(
+    @Body()  createVirtualMachineRequestDto: CreateVirtualMachineRequestDto,
+    @GetAccount() account: Account
+  ) {
+    return this.featuresService.createVirtualMachineRequest(account, createVirtualMachineRequestDto);
   }
 
   @Patch('requests/:id/status')
