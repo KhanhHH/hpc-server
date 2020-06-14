@@ -19,8 +19,22 @@ export class VirtualMachinesService {
   async getMyVirtualMachine(account: Account) {
     return this.virtualMachineRepository.findOne({ account });
   }
+
+  async getAllVps() {
+    return this.virtualMachineVpsRepository.find({
+      order: {
+        id: 'DESC'
+      }
+    });
+  }
+  
   async getMyVps(account: Account) {
-    return this.virtualMachineVpsRepository.find({ account });
+    return this.virtualMachineVpsRepository.find({
+      where: { account },
+      order: {
+        id: 'DESC'
+      }
+    });
   }
 
   async createMyVps(account: Account, createVpsDto: CreateVpsDto) {

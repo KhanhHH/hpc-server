@@ -31,6 +31,14 @@ export class VirtualMachinesController {
     return this.virtualMachinesService.getMyVirtualMachine(account);
   }
 
+  @Get('vps')
+  @UseGuards(AuthGuard())
+  @UsePipes(ValidationPipe)
+  @UseInterceptors(ClassSerializerInterceptor)
+  getAllVps() {
+    return this.virtualMachinesService.getAllVps();
+  }
+
   @Get('vps/me')
   @UseGuards(AuthGuard())
   @UsePipes(ValidationPipe)

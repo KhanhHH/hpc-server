@@ -2,7 +2,7 @@ import { EntityRepository, Repository } from 'typeorm';
 import { VirtualMachine } from './virtual-machine.entity';
 import { VirtualMachineVps } from './virtual-machine-vps.entity';
 import { FeatureStatus } from '../features/feature.enum';
-import { VpsStatus } from './vps-status.enum';
+import { VpsStatus, VpsApproveStatus } from './vps-status.enum';
 import { ConflictException } from '@nestjs/common';
 import { Account } from '../accounts/account.entity';
 import { UpdateVpsDto } from './dto/update-vps.dto';
@@ -54,8 +54,12 @@ export class VirtualMachineVpsRepository extends Repository<VirtualMachineVps> {
   }
 
   async updateVps(account: Account, vpsId: number, updateVpsDto: UpdateVpsDto) {
+    const { approveStatus } = updateVpsDto;
+    if (approveStatus && approveStatus === VpsApproveStatus.APPROVED) {
+      updateVpsDto.status = VpsStatus.UP;
+    }
     await this.update({ id: vpsId }, updateVpsDto);
-    const updated = await this.findOne({ id: vpsId })
+    const updated = await this.findOne({ id: vpsId });
     return updated;
   }
 }
